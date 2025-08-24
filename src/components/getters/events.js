@@ -137,7 +137,7 @@ export const fetchEvents = async () => {
             };
         });
         // Remove events that are deleted
-        events = events.filter((item) => item.deleted === false);
+        events = events.filter((item) => !item.deleted);
         events = shuffleArray(events);
         sessionStorage.setItem('events', JSON.stringify(events))
         return events;
