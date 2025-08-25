@@ -1,0 +1,32 @@
+// EXEMPLO DE CONFIGURAÇÃO FIREBASE
+// 1. Copie este arquivo para src/base.js
+// 2. Substitua os valores xxx pelas suas credenciais do Firebase Console
+// 3. NUNCA faça commit do arquivo base.js com credenciais reais
+
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
+import 'firebase/compat/auth';
+
+const firebaseConfig = {
+  apiKey: "xxx-sua-api-key-aqui-xxx",
+  authDomain: "seu-projeto.firebaseapp.com",
+  projectId: "seu-projeto-id",
+  storageBucket: "seu-projeto.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
+};
+
+// Inicializar Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+export { firebase };
+
+// Para obter suas credenciais:
+// 1. Acesse https://console.firebase.google.com
+// 2. Selecione seu projeto
+// 3. Vá em Configurações do Projeto (engrenagem)
+// 4. Role até "Seus aplicativos" > "Aplicativos da Web"
+// 5. Copie as configurações
