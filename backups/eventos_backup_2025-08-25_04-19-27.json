@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "collection": "evento",
+    "backupDate": "2025-08-25T02:19:27.617Z",
+    "totalDocuments": 1,
+    "firebaseProject": "onde-it-com",
+    "backupMethod": "client-sdk"
+  },
+  "events": [
+    {
+      "id": "pV04td1F1eFvnuUCHzXr",
+      "data": {
+        "data": {
+          "_timestamp": true,
+          "_seconds": 1756173597,
+          "_nanoseconds": 885000000,
+          "_dateString": "2025-08-26T01:59:57.000Z"
+        },
+        "organizer": {
+          "phone": "+258843026107",
+          "description": "Restaurant and Venue",
+          "email": "luisantuneswork@gmail.com",
+          "address": "entre Standard Bank e Venda de Flores, Av. Mao Tse Tung, Maputo",
+          "description_en": "Restaurant and Venue",
+          "name": "Artistas",
+          "id": "Dugzk6XF6OgwXRWMWn4c"
+        },
+        "category": [
+          {
+            "name_en": "Environmental Activities",
+            "members": 0,
+            "name": "Ambientais",
+            "id": "U1ZxKfTA3R6wUhLK3lSz"
+          }
+        ],
+        "lat": -25.978232972267953,
+        "categoria": "novo",
+        "lng": 32.58650600910187,
+        "locationName": "Maputo",
+        "description_en": "Event-01",
+        "location": "A Casa da Maria",
+        "views": 0,
+        "description": "Evento-01",
+        "hashtags": "Evento-01",
+        "time": "07:00",
+        "deleted": false,
+        "name": "Evento-01",
+        "coverImage": "https://firebasestorage.googleapis.com/v0/b/onde-it-com.appspot.com/o/imagens%2F1756087233817?alt=media&token=232b4c05-5d17-4efc-b117-57a9bfa4fa5c"
+      }
+    }
+  ]
+}

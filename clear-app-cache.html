@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpar Cache da Aplicação ONDE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            display: block;
+            width: 100%;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .danger {
+            background-color: #dc3545;
+        }
+        .danger:hover {
+            background-color: #c82333;
+        }
+        .success {
+            background-color: #28a745;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Limpar Cache da Aplicação ONDE</h1>
+        
+        <div class="status info">
+            <strong>ℹ️ Problema:</strong> O evento "Evento-01" existe no Firestore mas não aparece na aplicação web.
+        </div>
+        
+        <div class="status info">
+            <strong>🔍 Causa:</strong> Cache do sessionStorage impedindo a atualização dos dados.
+        </div>
+        
+        <button class="button" onclick="checkCache()">
+            🔍 Verificar Cache Atual
+        </button>
+        
+        <button class="button danger" onclick="clearAllCache()">
+            🗑️ Limpar TODO o Cache
+        </button>
+        
+        <button class="button" onclick="forceRefreshEvents()">
+            🔄 Forçar Atualização de Eventos
+        </button>
+        
+        <button class="button success" onclick="testEventsFetch()">
+            ✅ Testar Busca de Eventos
+        </button>
+        
+        <div id="log" class="log"></div>
+        
+        <div class="status info">
+            <strong>📋 Instruções:</strong><br>
+            1. Clique em "Verificar Cache Atual" para ver o que está armazenado<br>
+            2. Clique em "Limpar TODO o Cache" para remover todos os dados<br>
+            3. Clique em "Testar Busca de Eventos" para verificar se o evento aparece<br>
+            4. Recarregue a aplicação principal
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function checkCache() {
+            log('🔍 Verificando cache do sessionStorage...');
+            
+            const cacheKeys = [
+                'events',
+                'allEvents',
+                'topEvents',
+                'popularEvents',
+                'eventCategories',
+                'organizers'
+            ];
+            
+            cacheKeys.forEach(key => {
+                const data = sessionStorage.getItem(key);
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        if (Array.isArray(parsed)) {
+                            log(`✅ ${key}: ${parsed.length} itens`);
+                        } else {
+                            log(`✅ ${key}: dados encontrados`);
+                        }
+                    } catch (e) {
+                        log(`⚠️ ${key}: dados corrompidos`);
+                    }
+                } else {
+                    log(`❌ ${key}: vazio`);
+                }
+            });
+            
+            log('📊 Total de chaves no sessionStorage: ' + sessionStorage.length);
+        }
+
+        function clearAllCache() {
+            log('🗑️ Limpando TODO o cache...');
+            
+            // Limpar sessionStorage
+            const beforeCount = sessionStorage.length;
+            sessionStorage.clear();
+            log(`✅ SessionStorage limpo (${beforeCount} chaves removidas)`);
+            
+            // Limpar localStorage
+            const localBeforeCount = localStorage.length;
+            localStorage.clear();
+            log(`✅ LocalStorage limpo (${localBeforeCount} chaves removidas)`);
+            
+            // Limpar cookies (se houver)
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            log('✅ Cookies limpos');
+            
+            log('🎉 Cache completamente limpo!');
+            log('💡 Agora recarregue a aplicação principal');
+        }
+
+        function forceRefreshEvents() {
+            log('🔄 Forçando atualização de eventos...');
+            
+            // Remover especificamente os caches de eventos
+            const eventCaches = [
+                'events',
+                'allEvents',
+                'topEvents',
+                'popularEvents'
+            ];
+            
+            eventCaches.forEach(key => {
+                sessionStorage.removeItem(key);
+                log(`✅ Cache ${key} removido`);
+            });
+            
+            log('🎉 Caches de eventos removidos!');
+            log('💡 A próxima busca será feita diretamente no Firestore');
+        }
+
+        async function testEventsFetch() {
+            log('🧪 Testando busca de eventos...');
+            
+            try {
+                // Simular a busca que a aplicação faz
+                log('📡 Simulando busca no Firestore...');
+                log('⚠️ Nota: Este teste é apenas uma simulação');
+                log('📋 Para teste real, use a aplicação principal após limpar o cache');
+                
+                // Verificar se há cache
+                const cachedEvents = sessionStorage.getItem('events');
+                if (cachedEvents) {
+                    const events = JSON.parse(cachedEvents);
+                    log(`📊 Eventos em cache: ${events.length}`);
+                    
+                    const evento01 = events.find(e => e.name === 'Evento-01');
+                    if (evento01) {
+                        log('✅ Evento-01 encontrado no cache!');
+                        log(`   ID: ${evento01.id}`);
+                        log(`   Nome: ${evento01.name}`);
+                        log(`   Data: ${new Date(evento01.data.seconds * 1000).toISOString()}`);
+                    } else {
+                        log('❌ Evento-01 NÃO encontrado no cache');
+                    }
+                } else {
+                    log('ℹ️ Nenhum cache de eventos encontrado');
+                    log('💡 A próxima busca será feita no Firestore');
+                }
+                
+            } catch (error) {
+                log('❌ Erro no teste: ' + error.message);
+            }
+        }
+
+        // Verificar cache automaticamente ao carregar
+        window.onload = function() {
+            log('🚀 Ferramenta de limpeza de cache carregada');
+            log('📝 Use os botões acima para diagnosticar e limpar o cache');
+            checkCache();
+        };
+    </script>
+</body>
+</html>
+
